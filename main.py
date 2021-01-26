@@ -1,19 +1,19 @@
-import hashlib
 import json
-from textwrap import dedent
-from time import time
 from uuid import uuid4
 
-from flask import Flask
-from flask import Flask, jsonify, request
+from flask import Flask, render_template, jsonify, request
 
-from chain import Blockchain
+from static.chain import Blockchain
 from flask_cors import CORS, cross_origin
 
-# Instantiate our Node
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy   dog'
+@app.route('/')
+def root():
+
+    return render_template('index.html')
+
+app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy dog'
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 cors = CORS(app, resources={r"/foo": {"origins": "http://localhost:port"}})
@@ -53,7 +53,7 @@ def mine():
         'previous_hash': block['previous_hash']
     }
     return jsonify(response), 200
-  
+
 @app.route('/transactions/new', methods=['POST'])
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def new_transaction():
@@ -117,4 +117,4 @@ def consensus():
     return jsonify(response), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8080, debug=True)
