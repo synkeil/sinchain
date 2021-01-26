@@ -8,9 +8,15 @@ from flask import Flask
 from flask import Flask, jsonify, request
 
 from chain import Blockchain
+from flask_cors import CORS, cross_origin
 
 # Instantiate our Node
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy   dog'
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+cors = CORS(app, resources={r"/foo": {"origins": "http://localhost:port"}})
 
 # Generate a globally unique address for this node
 node_identifier = str(uuid4()).replace('-', '')
@@ -20,6 +26,7 @@ blockchain = Blockchain()
 
 
 @app.route('/mine', methods=['GET'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def mine():
     # We run the proof of work algorithm to get the next proof...
     last_block = blockchain.last_block
@@ -43,11 +50,12 @@ def mine():
         'index': block['index'],
         'transactions': block['transactions'],
         'proof': block['proof'],
-        'previous_hash': block['previous_hash'],
+        'previous_hash': block['previous_hash']
     }
     return jsonify(response), 200
   
 @app.route('/transactions/new', methods=['POST'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def new_transaction():
     values = request.get_json()
 
@@ -63,6 +71,7 @@ def new_transaction():
     return jsonify(response), 201
 
 @app.route('/chain', methods=['GET'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def full_chain():
     response = {
         'chain': blockchain.chain,
@@ -71,6 +80,7 @@ def full_chain():
     return jsonify(response), 200
 
 @app.route('/nodes/register', methods=['POST'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def register_nodes():
     values = request.get_json()
 
@@ -89,6 +99,7 @@ def register_nodes():
 
 
 @app.route('/nodes/resolve', methods=['GET'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def consensus():
     replaced = blockchain.resolve_conflicts()
 

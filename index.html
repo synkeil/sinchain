@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SinChain</title>
+</head>
+<body>
+  <button id="mine">Mine</button>
+  <button id="stop">Stop</button>
+  <button id="chain">View Chain</button>
+</body>
+<script>
+  let mining = false;
+  // start mining
+  const mine = () => {
+    mining = true;
+    fetch("http://localhost:5000/mine", {header:'Access-Control-Allow-Origin: *'})
+      .then(response => response.json())
+      .then(response => {console.log(response); if (mining === true) mine()})
+  }
+  // stop minig
+  const stop = () => { mining = false; }
+  // Display the state of the chain
+  const chain = () => {
+    mining = false;
+    fetch("http://localhost:5000/chain", {header:'Access-Control-Allow-Origin: *'})
+      .then(response => response.json())
+      .then(response => {console.log(response);})
+  }
+
+  // listeners
+  document.getElementById("mine").addEventListener("click", () => {mine()});
+  document.getElementById("stop").addEventListener("click", () => stop());
+  document.getElementById("chain").addEventListener("click", () => chain());
+
+</script>
+</html>
