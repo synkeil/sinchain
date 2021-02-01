@@ -36,7 +36,7 @@ class Blockchain(object):
         self.chain.append(block)
         return block
 
-    def new_transaction(self, sender, recipient, amount):
+    def new_transaction(self, data):
         """
         Creates a new transaction to go into the next mined Block
         :param sender: <str> Address of the Sender
@@ -44,11 +44,7 @@ class Blockchain(object):
         :param amount: <int> Amount
         :return: <int> The index of the Block that will hold this transaction
         """
-        self.current_transactions.append({
-            'sender': sender,
-            'recipient': recipient,
-            'amount': amount,
-        })
+        self.current_transactions.append(data)
 
         return self.last_block['index'] + 1
 
